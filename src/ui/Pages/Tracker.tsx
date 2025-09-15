@@ -4,7 +4,7 @@ import FlightCard from "../components/FlightCard";
 const Tracker = () => {
   return (
     <div>
-      <h1>Tracker</h1>
+      <h1>Flight Tracker</h1>
 
       <FlightCard />
     </div>

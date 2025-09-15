@@ -31,6 +31,7 @@ function Tracker() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const API_BASE = "https://api.facha.dev";
+
   // Fetch aircraft data whenever `reg` changes
   const latLng: LatLngExpression = [51.505, -0.09]; // Default center
   latLng[0] = data[0]?.lat || latLng[0];
@@ -72,65 +73,96 @@ function Tracker() {
     }
   };
 
-  return (
-    <div>
-      <div className="info m-8 grid grid-cols-30 gap-5 justify-centered ">
-        <div className="innerInfo  col-start-2 col-end-30 row-start-50 row-end-81 bg-[#263039] opacity-75 text-base wrap-break-word text-center mb-12">
-          <h2>Aircraft Tracker</h2>
-        </div>
-        <div className="innerInfo  col-start-2 col-end-30 row-start-80 row-end-85 bg-[#263039] opacity-75 text-opacity-100 text-base wrap-break-word text-center mb-12">
-          {loading && <p>Loading</p>}
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          <input
-            value={regInput}
-            onChange={(e) => setRegInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Enter registration (e.g. N12345)"
-          />
-        </div>
-        <div className="innerInfo  col-start-2 col-end-30 row-start-84 row-end-100 bg-[#263039 text-base wrap-break-word text-center mb-12"></div>
-        <div className="innerInfo  col-start-2 col-end-30 row-start-100 row-end-110 text-base wrap-break-word text-center mb-12"></div>
-
-        {data[0] && data2 && (
-          <div>
-            <p>Dest Lat: {data2.response.flightroute.destination.latitude}</p>
-            <p>Dest Lon: {data2.response.flightroute.destination.longitude}</p>
-            <p>ICAO: {data[0].icao}</p>
-            <p>Altitude: {data[0].baroAltitude} ft</p>
-            <p>Speed: {data[0].speed} knots</p>
-            <p>
-              Latitude to Destination:{" "}
-              {Math.abs(
-                data[0].lat - data2.response.flightroute.destination.latitude
-              )}
-            </p>
-            <p>Latitude: {data[0].lat}</p>
-            <p>Longitude: {data[0].lon}</p>
-            <p>Heading: {data[0].heading}°</p>
-            <p>Vertical Rate: {data[0].verticalRate} ft/min</p>
-            <p>Squawk: {data[0].squawk}</p>
-            <p>On Ground: {data[0].onGround ? "Yes" : "No"}</p>
-            <p>Military: {data[0].isMilitary ? "Yes" : "No"}</p>
-            <p>
-              Distance:{" "}
-              {haversineDistance(
-                data[0].lat,
-                data[0].lon,
-                data2.response.flightroute.destination.latitude,
-                data2.response.flightroute.destination.longitude
-              ) / 1000}{" "}
-              km
-            </p>
-            <p>
-              Position Time: {new Date(data[0].positionTime).toLocaleString()}
-            </p>
-
-            {/* Map goes here */}
+  try {
+    return (
+      <div>
+        <div className="info m-8 grid grid-cols-30 gap-5 justify-centered ">
+          <div className="innerInfo  col-start-2 col-end-30 row-start-50 row-end-53 bg-[#263039] opacity-75 text-base wrap-break-word text-center mb-12">
+            <h2>Aircraft Tracker</h2>
           </div>
-        )}
+          <div className="TrackingInfo  col-start-2 col-end-30 row-start-52 row-end-81 bg-[#263039] opacity-75 text-opacity-100 text-base wrap-break-word text-center mb-12">
+            {data[0] && data2 && (
+              <div>
+                <p>
+                  Dest Lat: {data2.response.flightroute.destination.latitude}
+                </p>
+                <p>
+                  Dest Lon: {data2.response.flightroute.destination.longitude}
+                </p>
+                <p>ICAO: {data[0].icao}</p>
+                <p>Altitude: {data[0].baroAltitude} ft</p>
+                <p>Speed: {data[0].speed} knots</p>
+                <p>
+                  Latitude to Destination:{" "}
+                  {Math.abs(
+                    data[0].lat -
+                      data2.response.flightroute.destination.latitude
+                  )}
+                </p>
+                <p>Latitude: {data[0].lat}</p>
+                <p>Longitude: {data[0].lon}</p>
+                <p>Heading: {data[0].heading}°</p>
+                <p>Vertical Rate: {data[0].verticalRate} ft/min</p>
+                <p>Squawk: {data[0].squawk}</p>
+
+                <p>On Ground: {data[0].onGround ? "Yes" : "No"}</p>
+                <p>
+                  Distance To Destination:{" "}
+                  {haversineDistance(
+                    data[0].lat,
+                    data[0].lon,
+                    data2.response.flightroute.destination.latitude,
+                    data2.response.flightroute.destination.longitude
+                  ) / 1000}{" "}
+                  km
+                </p>
+                <p>
+                  Position Time:{" "}
+                  {new Date(data[0].positionTime).toLocaleString()}
+                </p>
+              </div>
+            )}
+          </div>
+          <div className="innerInfo  col-start-2 col-end-30 row-start-80 row-end-85 bg-[#263039] opacity-75 text-opacity-100 text-base wrap-break-word text-center mb-12">
+            {loading && <p>Loading</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <input
+              value={regInput}
+              onChange={(e) => setRegInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter registration (e.g. N12345)"
+            />
+          </div>
+          <div className="innerInfo  col-start-2 col-end-30 row-start-84 row-end-100 opacity-75 text-base wrap-break-word text-center mb-12"></div>
+          <div className="innerInfo  col-start-2 col-end-30 row-start-100 row-end-110 text-base wrap-break-word text-center mb-12"></div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } catch (e) {
+    setError("Unable to fetch aircraft data. Please try again.");
+    return (
+      <div>
+        <div className="info m-8 grid grid-cols-30 gap-5 justify-centered ">
+          <div className="innerInfo  col-start-2 col-end-30 row-start-50 row-end-53 bg-[#263039] opacity-75 text-base wrap-break-word text-center mb-12">
+            <h2>Aircraft Tracker</h2>
+          </div>
+          <div className="TrackingInfo  col-start-2 col-end-30 row-start-52 row-end-81 bg-[#263039] opacity-75 text-opacity-100 text-base wrap-break-word text-center mb-12"></div>
+          <div className="innerInfo  col-start-2 col-end-30 row-start-80 row-end-85 bg-[#263039] opacity-75 text-opacity-100 text-base wrap-break-word text-center mb-12">
+            {loading && <p>Loading</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <input
+              value={regInput}
+              onChange={(e) => setRegInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter registration (e.g. N12345)"
+            />
+          </div>
+          <div className="innerInfo  col-start-2 col-end-30 row-start-84 row-end-100 opacity-75 text-base wrap-break-word text-center mb-12"></div>
+          <div className="innerInfo  col-start-2 col-end-30 row-start-100 row-end-110 text-base wrap-break-word text-center mb-12"></div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Tracker;
